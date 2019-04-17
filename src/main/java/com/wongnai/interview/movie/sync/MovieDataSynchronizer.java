@@ -21,6 +21,7 @@ public class MovieDataSynchronizer {
 
 	@Transactional
 	public void forceSync() {
+		movieRepository.deleteAll();
 		MoviesResponse movie_list = movieDataService.fetchAll();
 		for(MovieData movie: movie_list){
 			Movie tmp = new Movie(movie.getTitle());
