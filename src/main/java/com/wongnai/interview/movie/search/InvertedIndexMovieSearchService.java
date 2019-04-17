@@ -2,6 +2,7 @@ package com.wongnai.interview.movie.search;
 
 import java.util.*;
 
+import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
@@ -39,7 +40,23 @@ public class InvertedIndexMovieSearchService implements MovieSearchService {
 	public List<Movie> search(String queryText) {
 		if(invertedIndexTable == null){
 			createInvertedIndexTable();
+		}Set<Long> id = null;
+		for(String word : queryText.split(" ")){
+			String wordLowerCase = word.toLowerCase();
+			if(invertedIndexTable.containsKey(wordLowerCase)){
+				if(id == null){
+					id = new HashSet<>(invertedIndexTable.get(wordLowerCase));
+				}else{
+					id.retainAll(invertedIndexTable.get(wordLowerCase));
+				}
+			}
 		}
-		return null;
+		List<Movie> movies_list = new ArrayList<>();
+		try{
+			movies_list = Lists.newArrayList(movieRepository.findAllById(id));
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return movies_list;
 	}
 }
