@@ -1,9 +1,6 @@
 package com.wongnai.interview.movie.search;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
@@ -19,9 +16,9 @@ public class InvertedIndexMovieSearchService implements MovieSearchService {
 	@Autowired
 	private MovieRepository movieRepository;
 
-	private Map<String, List<Long>> invertedIndexTable;
+	private Map<String, List<Long>> invertedIndexTable = null;
 
-	public InvertedIndexMovieSearchService(){
+	private void createInvertedIndexTable(){
 		invertedIndexTable = new TreeMap<>();
 		for(Movie movie:movieRepository.findAll()){
 			for(String word : movie.getName().split(" ")){
@@ -40,7 +37,9 @@ public class InvertedIndexMovieSearchService implements MovieSearchService {
 
 	@Override
 	public List<Movie> search(String queryText) {
-
+		if(invertedIndexTable == null){
+			createInvertedIndexTable();
+		}
 		return null;
 	}
 }
